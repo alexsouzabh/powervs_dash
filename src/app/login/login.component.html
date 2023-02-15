@@ -1,0 +1,10 @@
+<ibm-loading [isActive]="true" [size]="'normal'" [overlay]="false" *ngIf="showLoading else showData"></ibm-loading>
+<div ibmGrid>
+  <ng-template #showData>
+    <div ibmRow>
+      <div ibmCol [columnNumbers]="{'md': 3, 'sm': 12}">
+        teste
+      </div>
+    </div>
+  </ng-template>
+</div>

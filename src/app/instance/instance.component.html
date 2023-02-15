@@ -1,0 +1,33 @@
+<app-header></app-header>
+<div class="starter-instance" ibmGrid>
+    <ibm-loading [isActive]="true" [size]="'normal'" [overlay]="false" *ngIf="showLoading else showData"></ibm-loading>
+    <ng-template #showData>
+		<div ibmRow>
+			<div ibmCol [columnNumbers]="{'md': 8}">
+				<a href="/home" ibmLink [inline]="true">Voltar</a>
+			</div>
+		</div>
+		<div ibmRow>
+			<div ibmCol [columnNumbers]="{'md': 8}">
+                <h1 class="title">[{{instance.instance_region}}] {{instance.instance_name}}</h1>
+                <h3 class="subtitle">Valor total da instância: US$ {{instance.billing.total_cost}}</h3>
+            </div>
+		</div>
+		<div ibmRow class="nvm-content">
+			<div ibmCol [columnNumbers]="{'md': 8}">
+				<ibm-tabs>
+					<ibm-tab heading="Consolidado">
+						<ibm-table [sortable]="false" [model]="instance.model" [showSelectionColumn]="false">
+						</ibm-table>
+					</ibm-tab>
+					<div *ngFor="let pvm of instance.pvm_instances">
+						<ibm-tab heading="{{pvm.server_name}}">
+							<ibm-table [sortable]="false" [model]="pvm.model" [showSelectionColumn]="false">
+							</ibm-table>
+						</ibm-tab>
+					</div>
+				</ibm-tabs>
+			</div>
+        </div>
+    </ng-template>
+</div>

@@ -1,0 +1,32 @@
+{
+  "name": "power-systems-virtual-server-dashboard",
+  "version": "1.0.0",
+  "description": "Power Systems Virtual Server API",
+  "main": "server.js",
+  "scripts": {
+    "dev": "npx nodemon server.js",
+    "start": "npx node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kesselyn Fortunato",
+  "license": "ISC",
+  "dependencies": {
+    "@ibm-cloud/cloudant": "^0.1.2",
+    "@ibm-cloud/platform-services": "^0.24.1",
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "i": "^0.3.7",
+    "npm": "^8.9.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "engines": {
+    "node": "12.22.6",
+    "npm": "6.14.15"
+  }
+}

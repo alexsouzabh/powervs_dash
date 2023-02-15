@@ -1,0 +1,37 @@
+ibm-loading {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-table {
+    margin-top: 20px;
+}
+
+.empty-user {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.align-content {
+    display: flex;
+    justify-content: space-between;
+    width: 1300px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    width: 250px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+    margin: 20px 0;
+}

@@ -1,0 +1,77 @@
+<app-header></app-header>
+<div class="starter-instance" ibmGrid>
+    <ibm-loading [isActive]="true" [size]="'normal'" [overlay]="false" *ngIf="showLoading else showData"></ibm-loading>
+    <ng-template #showData>
+        <div ibmRow class="user-table">
+			<div ibmCol [columnNumbers]="{'md': 8, 'sm': 12}">
+				<ibm-table-container>
+					<ibm-table-header>
+						<h4 ibmTableHeaderTitle>Usuários</h4>
+						<p ibmTableHeaderDescription>Lista de usuários cadastrados na plataforma.</p>
+					</ibm-table-header>
+					<div *ngIf="userList.length !== 0 else noPvm">
+						<ibm-accordion [align]="end">
+							<div *ngFor="let user of userList">
+								<ibm-accordion-item title="{{user.user.name}}">
+									<div class="align-content">
+										<div>
+											<p>E-mail: {{user.user.email}}</p>
+											<p>Cargo: {{user.user.role === "admin" ? "Administrador" : "Usuário"}}</p>
+										</div>
+										<div class="content">
+											<button ibmButton="primary" size="normal" (click)="openModalEdit(user.user)">Editar</button>
+											<button ibmButton="danger" size="normal" (click)="openModalDelete(user.user)">Deletar</button>
+										</div>
+									</div>
+								</ibm-accordion-item>
+							</div>
+						</ibm-accordion>
+					</div>
+					<ng-template #noPvm>
+						<div class="empty-user">Sem usuários a serem exbidos no momento</div>
+					</ng-template>
+					<ibm-modal [size]="lg" [open]="modelEdit" (overlaySelected)="closeModalEdit()">
+						<ibm-modal-header (closeSelect)="closeModalEdit()" [showCloseButton]="true">
+							<h3 ibmModalHeaderHeading>Editar usuário</h3>
+						</ibm-modal-header>
+						<form [formGroup]="userForm" (ngSubmit)="updateUser(roleSelect)">
+							<div ibmModalContent class="form">
+								<ibm-label>
+									Nome
+									<input ibmText type="text" formControlName="name">
+								</ibm-label>
+								<ibm-label>
+									E-mail
+									<input ibmText type="text" formControlName="email">
+								</ibm-label>
+								<ibm-label>
+									Cargo
+									<ibm-select #roleSelect>
+										<option [selected]="true" [value]="user.role">{{user.role == "admin" ? "Administrador" : "Usuário"}}</option>
+										<option [value]="user.role == 'admin' ? 'user' : 'admin'">{{user.role == "admin" ? "Usuário" : "Administrador"}}</option>
+									</ibm-select>
+								</ibm-label>
+							</div>
+							<ibm-modal-footer>
+								<button class="bx--btn bx--btn--secondary" (click)="closeModalEdit()">Fechar</button>
+								<button class="bx--btn bx--btn--primary" modal-primary-focus type="submit">Enviar</button>
+							</ibm-modal-footer>
+						</form>
+					</ibm-modal>
+					<ibm-modal [size]="lg" [open]="modelDelete" (overlaySelected)="closeModalDelete()">
+						<ibm-modal-header (closeSelect)="closeModalDelete()" [showCloseButton]="true">
+							<h3 ibmModalHeaderHeading>Deletar usuário</h3>
+						</ibm-modal-header>
+						<section ibmModalContent>
+							<p ibmModalContentText>Tem certeza que deseja deletar o usuário {{user.name}}?</p>
+						</section>
+						<ibm-modal-footer>
+							<button class="bx--btn bx--btn--secondary" (click)="closeModalDelete()">Fechar</button>
+							<button class="bx--btn bx--btn--danger" modal-primary-focus (click)="deleteUser(user.id)">Deletar</button>
+						</ibm-modal-footer>
+					</ibm-modal>
+				</ibm-table-container>
+			</div>
+		</div>
+    </ng-template>
+</div>

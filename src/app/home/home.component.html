@@ -1,0 +1,29 @@
+<app-header></app-header>
+<div class="starter-home" ibmGrid>
+    <ibm-loading [isActive]="true" [size]="'normal'" [overlay]="false" *ngIf="showLoading else showData"></ibm-loading>
+	<ng-template #showData>
+		<div ibmRow class="pvm-table">
+			<div ibmCol [columnNumbers]="{'md': 8, 'sm': 12}">
+				<ibm-table-container>
+					<ibm-table-header>
+						<h4 ibmTableHeaderTitle>Instâncias de Power</h4>
+						<p ibmTableHeaderDescription>Lista das instâncias de Power Systems Virtual Server encontradas.</p>
+					</ibm-table-header>
+					<div *ngIf="pvmList.length !== 0 else noPvm">
+						<div ibmRow class="table-item" *ngFor="let pvm of pvmList">
+							<div ibmCol [columnNumbers]="{'md': 7, 'sm': 12}" class="pvm-info-wrapper">
+								<p>[{{pvm.instance_region}}] {{pvm.instance_name}}</p>
+							</div>
+							<div ibmCol [columnNumbers]="{'md': 1, 'sm': 12}">
+								<button ibmButton="primary" size="normal" (click)="pvmInstance(pvm.instance_id)">Ver mais</button>
+							</div>
+						</div>
+					</div>
+					<ng-template #noPvm>
+						<div class="empty-pvm"> Sem instâncias disponíveis no momento</div>
+					</ng-template>
+				</ibm-table-container>
+			</div>
+		</div>
+	</ng-template>
+</div>
