@@ -14,15 +14,16 @@ module.exports = {
             selector: selector
         })).result.docs[0]
 
-        !result && res.status(204).json([])
-        
-        let data = result.instances.reduce((acc, instance) => [...acc, { 
-            instance_name: instance.instance_name,
-            instance_id: instance.instance_id,
-            instance_region: instance.instance_region 
-        }], [])
-
-        res.status(202).json(data)
+        if(!result) {
+            res.status(204).json([])
+        } else {
+            let data = result.instances.reduce((acc, instance) => [...acc, { 
+                instance_name: instance.instance_name,
+                instance_id: instance.instance_id,
+                instance_region: instance.instance_region 
+            }], [])
+            res.status(202).json(data)
+        }
     },
 
     async getInstance(req, res, next) {

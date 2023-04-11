@@ -10,7 +10,7 @@ app.use('/api', require('./routes'))
 
 app.use('/home', express.static(__dirname + '/public'))
 app.use('/instance', express.static(__dirname + '/public'))
-// app.use('/users', express.static(__dirname + '/public'))
+app.use('/users', express.static(__dirname + '/public'))
 app.use(express.static(__dirname + '/public'))
 
 app.listen(3000)

@@ -246,10 +246,12 @@ module.exports = {
             authenticator, 
             serviceUrl: 'https://billing.cloud.ibm.com' 
         })
+        let year = new Date().getUTCFullYear() // Added by Ale Souza
         let month = new Date().getUTCMonth() + 1
         const params = {
             accountId: process.env.ACCOUNT_ID,
-            billingmonth: `2022-${month < 10 ? `0${month}` : month}`,
+            //billingmonth: `2022-${month < 10 ? `0${month}` : month}`,
+            billingmonth: `${year}-${month < 10 ? `0${month}` : month}`,
             names: true
         }
         const resources = (await serviceClient.getResourceUsageAccount(params)).result.resources
@@ -449,12 +451,28 @@ module.exports = {
                     const yesterdayInstances = result.instances
                     instances = helpers.verifyDeletedInstances(instances, yesterdayInstances)
                 } 
+
+                // verify if yet exists a document today
+                const selectorToday = CloudantV1.JsonObject = { date: { "$eq": today.getTime() } }
+                let resultToday = (await service.postFind({
+                    db: 'power-vs',
+                    executionStats: true,
+                    selector: selectorToday
+                })).result.docs[0]
                 
                 let productsDoc = CloudantV1.Document = { instances, date: today.getTime() }
                 service.postDocument({
                     db: 'power-vs',
                     document: productsDoc
                 })
+
+                if(resultToday) {
+                    service.deleteDocument({
+                        db: 'power-vs',
+                        docId: resultToday._id,
+                        rev: resultToday._rev
+                    })
+                }
             }
             res.status(200).send("Database populated")
         } catch(error) {
