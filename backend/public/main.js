@@ -534,7 +534,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: true,
-    production_url: "url_here",
+    production_url: "https://powervs-dash.115e0797phqb.br-sao.codeengine.appdomain.cloud",
     development_url: "http://localhost:3000"
 };
 /*
