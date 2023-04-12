@@ -54,7 +54,8 @@ module.exports = {
                         instance_name: resource.name,
                         instance_crn: resource.crn,
                         instance_id: resource.guid,
-                        instance_region: helpers.replaceRegion(resource.region_id)
+                        instance_region: helpers.replaceRegion(resource.region_id),
+                        status: "enable"
                     }
                     return [...acc, newResource]
                 } else return acc
@@ -105,7 +106,8 @@ module.exports = {
                         minmem: pvmInstance.minmem,
                         minproc: pvmInstance.minproc,
                         status: pvmInstance.status,
-                        high_ram
+                        high_ram,
+                        status: "enable"
                     }]
                 }, [])
                 instance.pvm_instances = newPvmInstances
@@ -146,11 +148,15 @@ module.exports = {
                     }
                     data.volumes.map(volume => {
                         let creationDate = volume.creationDate.split(/-|T/g)
+                        
+                        //checks if it is a volume that was created more than a year ago or more than a month ago
                         if(today.getFullYear() > parseInt(creationDate[0]) || today.getMonth() + 1 > parseInt(creationDate[1])) {
                             let yesterday = today.getDate() - 1
                             volumes[volume.diskType][`${yesterday}`] = (volumes[volume.diskType] ? (volumes[volume.diskType][`${yesterday}`] ? volumes[volume.diskType][`${yesterday}`] : 0) : 0) + volume.size
                             volumes[volume.diskType].total = volumes[volume.diskType].total + volume.size
-                        } else {
+                        } 
+                        //calculates the number of days the item has been active
+                        else {
                             let numDays = today.getDate() - parseInt(creationDate[2])
                             if (numDays !== 0) {
                                 volumes[volume.diskType][`${numDays}`] = (volumes[volume.diskType] ? (volumes[volume.diskType][`${numDays}`] ? volumes[volume.diskType][`${numDays}`] : 0) : 0) + volume.size
@@ -214,12 +220,13 @@ module.exports = {
                         }
 
                     let newImage = {
-                        imageID: data2.imageID,
+                        image_id: data2.imageID,
                         name: data2.name,
-                        creationDate: data2.creationDate,
+                        creation_date: data2.creationDate,
                         size: data2.size,
-                        storageType: data2.storageType,
-                        days
+                        storage_type: data2.storageType,
+                        days,
+                        status: "enable"
                     }
                     images.push(newImage)
                 }))
@@ -246,16 +253,15 @@ module.exports = {
             authenticator, 
             serviceUrl: 'https://billing.cloud.ibm.com' 
         })
-        let year = new Date().getUTCFullYear() // Added by Ale Souza
+        let year = new Date().getFullYear()
         let month = new Date().getUTCMonth() + 1
         const params = {
             accountId: process.env.ACCOUNT_ID,
-            //billingmonth: `2022-${month < 10 ? `0${month}` : month}`,
             billingmonth: `${year}-${month < 10 ? `0${month}` : month}`,
             names: true
         }
         const resources = (await serviceClient.getResourceUsageAccount(params)).result.resources
-        const powerResources = resources.reduce((acc, resource) => resource.resource_name === "Power Systems Virtual Server" ? [ ...acc, resource ] : acc, [])
+        const powerResources = resources.reduce((acc, resource) => resource.resource_name.includes("Power Systems Virtual Server") ? [ ...acc, resource ] : acc, [])
         let newInstances = []
         instances.map(instance => {
             let usage = []
@@ -400,7 +406,7 @@ module.exports = {
             let newImages = []
             
             instance.images.map(image => {
-                if(image.storageType === "tier1") {
+                if(image.storage_type === "tier1") {
                     image.billing = parseFloat((image.size * (24 * image.days + hours) * ssd).toFixed(2))
                     billingInstance.ssd = parseFloat((billingInstance.ssd + image.billing).toFixed(2))
                     billingInstance.total = billingInstance.total + image.billing
